@@ -16,6 +16,10 @@
  */
 #include <string.h>
 #include <jni.h>
+#include <android/log.h>
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavfilter/avfilter.h"
 #include "com_smallest_test_hellojni_MainActivity.h"
 
 /* This is a trivial JNI example where we use a native method
@@ -43,5 +47,29 @@ JNIEXPORT jstring JNICALL Java_com_smallest_test_hellojni_MainActivity_stringFro
 #else
    #define ABI "unknown"
 #endif
+    char info[40000] = {0};
+    av_register_all();
+    AVCodec *c_temp = av_codec_next(NULL);
+    while(c_temp != NULL){
+       if(c_temp->decode!=NULL){
+          sprintf(info,"%s[Dec]",info);
+       }else{
+          sprintf(info,"%s[Enc]",info);
+       }
+       switch(c_temp->type){
+        case AVMEDIA_TYPE_VIDEO:
+          sprintf(info,"%s[Video]",info);
+          break;
+        case AVMEDIA_TYPE_AUDIO:
+          sprintf(info,"%s[Audio]",info);
+          break;
+        default:
+          sprintf(info,"%s[Other]",info);
+          break;
+       }
+       sprintf(info,"%s[%10s]\n",info,c_temp->name);
+       c_temp=c_temp->next;
+    }
+__android_log_print(ANDROID_LOG_INFO,"myTag","info:\n%s",info);
     return (*env)->NewStringUTF(env, "Hello from JNI !  Compiled with ABI " ABI ".");
 }
