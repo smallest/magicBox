@@ -17,10 +17,9 @@
 #include <string.h>
 #include <jni.h>
 #include <android/log.h>
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavfilter/avfilter.h"
 #include "com_smallest_test_hellojni_MainActivity.h"
+#include "FFmpeger.h"
+#include <stdio.h>
 
 /* This is a trivial JNI example where we use a native method
  * to return a new VM String. See the corresponding Java source
@@ -47,29 +46,19 @@ JNIEXPORT jstring JNICALL Java_com_smallest_test_hellojni_MainActivity_stringFro
 #else
    #define ABI "unknown"
 #endif
-    char info[40000] = {0};
-    av_register_all();
-    AVCodec *c_temp = av_codec_next(NULL);
-    while(c_temp != NULL){
-       if(c_temp->decode!=NULL){
-          sprintf(info,"%s[Dec]",info);
-       }else{
-          sprintf(info,"%s[Enc]",info);
-       }
-       switch(c_temp->type){
-        case AVMEDIA_TYPE_VIDEO:
-          sprintf(info,"%s[Video]",info);
-          break;
-        case AVMEDIA_TYPE_AUDIO:
-          sprintf(info,"%s[Audio]",info);
-          break;
-        default:
-          sprintf(info,"%s[Other]",info);
-          break;
-       }
-       sprintf(info,"%s[%10s]\n",info,c_temp->name);
-       c_temp=c_temp->next;
-    }
-__android_log_print(ANDROID_LOG_INFO,"myTag","info:\n%s",info);
-    return (*env)->NewStringUTF(env, "Hello from JNI !  Compiled with ABI " ABI ".");
+  char info[60000] = {0};
+  FFmpeger::avformat_info(info);
+  __android_log_print(ANDROID_LOG_INFO,"myTag","avformatInfo:\n%s", info);
+  char info2[60000] = {0};
+  FFmpeger::avcodec_info(info2);
+  __android_log_print(ANDROID_LOG_INFO,"myTag","avcodecInfo:\n%s", info2);
+  char info3[60000] = {0};
+  FFmpeger::avfilter_info(info3);
+  __android_log_print(ANDROID_LOG_INFO,"myTag","avfilterInfo:\n%s", info3);
+  char info4[60000] = {0};
+  FFmpeger::avcodec_config(info4);
+  __android_log_print(ANDROID_LOG_INFO,"myTag","avcodecConfiguration:\n%s", info4);
+  char infoTotal[300000] = {0};
+  sprintf(infoTotal, "avformatInfo:\n%s avcodecInfo:\n%s avfilterInfo:\n%s avcodecConfiguration:\n%s", info, info2, info3, info4);
+  return (*env).NewStringUTF(infoTotal);
 }

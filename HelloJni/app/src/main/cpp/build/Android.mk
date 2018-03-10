@@ -56,7 +56,7 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := hello-jni
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../include
-LOCAL_SRC_FILES := $(LOCAL_PATH)/../src/hello-jni.c
+LOCAL_SRC_FILES := $(wildcard $(LOCAL_PATH)/../src/*.cpp)
 LOCAL_LDLIBS := -llog
 LOCAL_SHARED_LIBRARIES := libavcodec libavfilter libavformat libavutil libswresample libswscale libavdevice
 include $(BUILD_SHARED_LIBRARY)
