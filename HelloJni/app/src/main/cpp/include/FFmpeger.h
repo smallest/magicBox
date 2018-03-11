@@ -1,6 +1,3 @@
-//
-// Created by gavinxu on 2018/3/10.
-//
 #ifndef HELLOJNI_FFMPEGER_H
 #define HELLOJNI_FFMPEGER_H
 class FFmpeger {
